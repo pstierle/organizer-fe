@@ -10,7 +10,7 @@
 </template>
 <script lang="ts" setup>
 defineProps({
-  open: boolean,
+  open: Boolean,
 });
 defineEmits<{
   (eventName: "close"): void;

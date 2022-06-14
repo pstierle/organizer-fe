@@ -1,6 +1,4 @@
 <template>
-  <div class="bg-gray-600">test</div>
-
   <GlobalModal />
 </template>
 
