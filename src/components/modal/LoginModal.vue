@@ -1,41 +1,92 @@
 <template>
-  <OrganizerModal :open="loginModalOpen" @close="loginModalOpen = false">
-    <form @submit="register(registerForm)">
-      <input v-model="registerForm.name" placeholder="Nutzername" />
-      <input v-model="registerForm.email" placeholder="Email" />
-      <input v-model="registerForm.password" placeholder="Passwort" />
-      <input
-        v-model="registerForm.verify_password"
-        placeholder="Passwort bestätigen"
+  <OrganizerModal
+    :open="loginModalOpen"
+    @close="loginModalOpen = false"
+    label="Login"
+  >
+    <form @submit.prevent="_register">
+      <Input :value="registerForm.name" label="Nutzername" />
+      <Input :value="registerForm.email" label="Email" />
+      <Input :value="registerForm.password" label="Passwort" />
+      <Input
+        :value="registerForm.verify_password"
+        label="Passwort bestätigen"
       />
 
       <button type="submit">Registrieren</button>
     </form>
+    <form @submit.prevent="_login">
+      <Input :value="loginForm.name" label="Nutzername" />
+      <Input :value="loginForm.password" label="Passwort" />
+      <div class="flex items-center justify-between">
+        <Checkbox :value="stayLoggedIn" label="Angemeldet bleiben" />
+        <button type="submit">Anmelden</button>
+      </div>
+    </form>
+    <div>
+      <div v-for="(error, index) in errors?.errors">
+        <p>{{ error.message }}</p>
+        <p>{{ error.type }}</p>
+      </div>
+    </div>
   </OrganizerModal>
 </template>
 
 <script lang="ts" setup>
 import OrganizerModal from "@/components/modal/OrganizerModal.vue";
-import { useGlobalModal } from "@/composeables/useGlobalModal.ts";
-import { useUser } from "@/composeables/useUser.ts";
-import { IUser } from "@/models/IUser.ts";
+import { useGlobalModal } from "@/composeables/useGlobalModal";
+import { useUser } from "@/composeables/useUser";
+import { IUser } from "@/models/IUser";
+import { ISequelizeError } from "@/models/ISequelizeError";
 import { watch, ref } from "vue";
+import Input from "@/components/input/Input.vue";
+import Checkbox from "../input/Checkbox.vue";
 
 const { loginModalOpen } = useGlobalModal();
-const { user, register } = useUser();
+const { user, register, login, stayLoggedIn } = useUser();
+const errors = ref<ISequelizeError>();
 
-const registerForm = ref<IUser>({
+const registerForm = ref<IUser & { password: string; verify_password: string }>(
+  {
+    name: "",
+    email: "",
+    password: "",
+    verify_password: "",
+  }
+);
+
+const loginForm = ref<{ name: string; password: string }>({
   name: "",
-  email: "",
   password: "",
-  verify_password: "",
 });
+
+const _register = async () => {
+  errors.value = undefined;
+  try {
+    await register(registerForm.value);
+  } catch (e) {
+    const error = e as ISequelizeError;
+    errors.value = error;
+  }
+};
+
+const _login = async () => {
+  errors.value = undefined;
+  try {
+    await login(loginForm.value);
+  } catch (e) {
+    const error = e as ISequelizeError;
+    errors.value = error;
+  }
+};
 
 watch(
   user,
   () => {
-    if (!user) {
+    if (!user.value) {
       loginModalOpen.value = true;
+    } else {
+      loginModalOpen.value = false;
     }
   },
   {
