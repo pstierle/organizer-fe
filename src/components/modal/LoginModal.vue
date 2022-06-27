@@ -5,21 +5,21 @@
     label="Login"
   >
     <form @submit.prevent="_register">
-      <Input :value="registerForm.name" label="Nutzername" />
-      <Input :value="registerForm.email" label="Email" />
-      <Input :value="registerForm.password" label="Passwort" />
+      <Input v-model="registerForm.name" label="Nutzername" />
+      <Input v-model="registerForm.email" label="Email" />
+      <Input v-model="registerForm.password" label="Passwort" />
       <Input
-        :value="registerForm.verify_password"
+        v-model="registerForm.verify_password"
         label="Passwort bestätigen"
       />
 
       <button type="submit">Registrieren</button>
     </form>
     <form @submit.prevent="_login">
-      <Input :value="loginForm.name" label="Nutzername" />
-      <Input :value="loginForm.password" label="Passwort" />
+      <Input v-model="loginForm.name" label="Nutzername" />
+      <Input v-model="loginForm.password" label="Passwort" />
       <div class="flex items-center justify-between">
-        <Checkbox :value="stayLoggedIn" label="Angemeldet bleiben" />
+        <Checkbox v-model="stayLoggedIn" label="Angemeldet bleiben" />
         <button type="submit">Anmelden</button>
       </div>
     </form>
@@ -63,6 +63,7 @@ const loginForm = ref<{ name: string; password: string }>({
 const _register = async () => {
   errors.value = undefined;
   try {
+    console.log(registerForm.value);
     await register(registerForm.value);
   } catch (e) {
     const error = e as ISequelizeError;

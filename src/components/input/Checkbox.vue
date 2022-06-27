@@ -1,21 +1,27 @@
 <template>
-  <div class="flex gap-1">
-    <input v-bind="$attrs" v-model="value" type="checkbox" />
-    <p v-if="label" class="text-xs">{{ label }}</p>
+  <div>
+    <p>{{ label }}</p>
+    <input v-model="(model as boolean)" type="checkbox" v-bind="$attrs" />
   </div>
 </template>
+
+<script lang="ts">
+export default {
+  inheritAttrs: false,
+};
+</script>
 
 <script lang="ts" setup>
 import { useVModel } from "@vueuse/core";
 
 const props = defineProps<{
   label?: string;
-  value: any;
+  modelValue?: boolean;
 }>();
 
 defineEmits<{
-  (event: "update:value", data: any): void;
+  (event: "update:modelValue", data: string): void;
 }>();
 
-const value = useVModel(props);
+const model = useVModel(props);
 </script>

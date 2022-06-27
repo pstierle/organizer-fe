@@ -1,25 +1,27 @@
 <template>
   <div>
-    <p v-if="label" class="text-xs">{{ label }}</p>
-    <input
-      v-bind="$attrs"
-      v-model="value"
-      class="rounded p-0.5 placeholder:text-sm"
-    />
+    <p>{{ label }}</p>
+    <input v-model="model" type="text" v-bind="$attrs" />
   </div>
 </template>
+
+<script lang="ts">
+export default {
+  inheritAttrs: false,
+};
+</script>
 
 <script lang="ts" setup>
 import { useVModel } from "@vueuse/core";
 
 const props = defineProps<{
   label?: string;
-  value: any;
+  modelValue?: string;
 }>();
 
 defineEmits<{
-  (event: "update:value", data: any): void;
+  (event: "update:modelValue", data: string): void;
 }>();
 
-const value = useVModel(props);
+const model = useVModel(props);
 </script>
