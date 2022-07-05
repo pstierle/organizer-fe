@@ -1,7 +1,6 @@
 <template>
   <div class="flex flex-col justify-between">
-    <div>blabla</div>
-    <div>{{ user?.name }}</div>
+    <div>{{ user }}</div>
   </div>
 </template>
 

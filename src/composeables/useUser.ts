@@ -3,7 +3,7 @@ import { ref } from "vue";
 import { IUser } from "@/models/IUser";
 import { useLocalStorage } from "@vueuse/core";
 
-const stayLoggedIn = useLocalStorage<boolean>("stayLoggedIn", false);
+const sessionId = useLocalStorage<string>("sessionId", false);
 
 export function useUser() {
   const user = ref<IUser>();
@@ -36,6 +36,6 @@ export function useUser() {
     user,
     login,
     register,
-    stayLoggedIn,
+    sessionId,
   };
 }

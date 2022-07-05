@@ -43,3 +43,11 @@ export const isError = (
 ): data is ISequelizeError => {
   return (<ISequelizeError>data).errors !== undefined;
 };
+
+export const generateSession = async () => {
+  const { data } = await fetch<string>("http://localhost:3001/api/session", {
+    method: "POST",
+    timeout: 30,
+  });
+  return data;
+};

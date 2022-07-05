@@ -41,10 +41,12 @@ import { ISequelizeError } from "@/models/ISequelizeError";
 import { watch, ref } from "vue";
 import Input from "@/components/input/Input.vue";
 import Checkbox from "../input/Checkbox.vue";
+import { generateSession } from "@/api/user";
 
 const { loginModalOpen } = useGlobalModal();
-const { user, register, login, stayLoggedIn } = useUser();
+const { user, register, login, sessionId } = useUser();
 const errors = ref<ISequelizeError>();
+const stayLoggedIn = ref(false);
 
 const registerForm = ref<IUser & { password: string; verify_password: string }>(
   {
@@ -75,6 +77,9 @@ const _login = async () => {
   errors.value = undefined;
   try {
     await login(loginForm.value);
+    if (stayLoggedIn.value) {
+      sessionId.value = await generateSession();
+    }
   } catch (e) {
     const error = e as ISequelizeError;
     errors.value = error;
